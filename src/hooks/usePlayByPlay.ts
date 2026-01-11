@@ -29,10 +29,21 @@ interface TeamInfo {
   logo: string;
 }
 
+// Convert ESPN $ref URL to use our proxy (to avoid CORS)
+function toProxyUrl(refUrl: string): string {
+  // In production, use Vercel rewrite proxy
+  // In development, try direct fetch (may fail due to CORS)
+  if (import.meta.env.PROD) {
+    // https://sports.core.api.espn.com/v2/... -> /api/espn/v2/...
+    return refUrl.replace('https://sports.core.api.espn.com', '/api/espn');
+  }
+  return refUrl;
+}
+
 // Fetch athlete data from ESPN API $ref URL
 async function fetchAthlete(refUrl: string): Promise<ResolvedAthlete | null> {
   try {
-    const response = await fetch(refUrl);
+    const response = await fetch(toProxyUrl(refUrl));
     if (!response.ok) return null;
     return response.json();
   } catch {
@@ -43,7 +54,7 @@ async function fetchAthlete(refUrl: string): Promise<ResolvedAthlete | null> {
 // Fetch position data from ESPN API $ref URL
 async function fetchPosition(refUrl: string): Promise<{ abbreviation: string } | null> {
   try {
-    const response = await fetch(refUrl);
+    const response = await fetch(toProxyUrl(refUrl));
     if (!response.ok) return null;
     return response.json();
   } catch {
