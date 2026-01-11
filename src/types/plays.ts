@@ -75,17 +75,35 @@ export interface PlayTeam {
 
 export interface PlayParticipant {
   athlete: {
-    id: string;
-    displayName: string;
-    shortName: string;
+    $ref?: string;
+    id?: string;
+    displayName?: string;
+    shortName?: string;
     headshot?: string;
     jersey?: string;
     position?: {
       abbreviation: string;
     };
   };
+  position?: {
+    $ref?: string;
+  };
   type: string;
   order: number;
+}
+
+// Resolved athlete data (after fetching from $ref)
+export interface ResolvedAthlete {
+  id: string;
+  displayName: string;
+  shortName: string;
+  headshot?: {
+    href: string;
+  };
+  jersey?: string;
+  position?: {
+    abbreviation: string;
+  };
 }
 
 // Normalized play for visualization
@@ -118,6 +136,12 @@ export interface NormalizedPlay {
   endTerritory?: string;
   // Participants
   participants: PlayParticipant[];
+  // Scorer info (for touchdowns)
+  scorer?: {
+    name: string;
+    position?: string;
+    headshot?: string;
+  };
 }
 
 // Animation state for play visualization
@@ -178,7 +202,7 @@ export function toAbsoluteYardLine(
   yardLine: number,
   possessingTeamId: string,
   homeTeamId: string,
-  awayTeamId: string
+  _awayTeamId: string
 ): number {
   // If home team has possession:
   // - Their 20 yard line = 20 (left side)
@@ -206,7 +230,7 @@ export type PlayCategory =
   | 'end_period'
   | 'other';
 
-export function getPlayCategory(typeId: string, typeText: string): PlayCategory {
+export function getPlayCategory(_typeId: string, typeText: string): PlayCategory {
   const text = typeText.toLowerCase();
 
   if (text.includes('rush') || text.includes('run')) return 'rush';

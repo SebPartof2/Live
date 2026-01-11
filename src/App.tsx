@@ -4,6 +4,7 @@ import { Scorebug } from './components/Scorebug';
 import { Header } from './components/Header';
 import { ByeWeekTeams } from './components/ByeWeekTeams';
 import { GameDetail } from './pages/GameDetail';
+import { GamePlays } from './pages/GamePlays';
 import { Teams } from './pages/Teams';
 import { TeamDetail } from './pages/TeamDetail';
 import { News } from './pages/News';
@@ -238,6 +239,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Scoreboard />} />
         <Route path="/game/:gameId" element={<GameDetail />} />
+        <Route path="/game/:gameId/plays" element={<GamePlays />} />
         <Route path="/teams" element={<Teams />} />
         <Route path="/team/:teamId" element={<TeamDetail />} />
         <Route path="/news" element={<News />} />
